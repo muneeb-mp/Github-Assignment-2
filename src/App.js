@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Input from "./Components/Input";
+import ProfileCard from "./Components/ProfileCard";
 
 function App() {
+  const [userSearch, setUserSearch] = useState("");
+  const [userdata, setUserdata] = useState("");
+
+  const submitUsername = async (e) => {
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${userSearch}`
+      );
+      const data = await response.json();
+      setUserdata(data);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const displayProfile = (e) => {
+    e.preventDefault();
+    submitUsername();
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="container">
+        <h2 className="main-title">Github Profile Finder</h2>
+        <Input
+          displayProfile={displayProfile}
+          userSearch={userSearch}
+          setUserSearch={setUserSearch}
+        />
+        <ProfileCard userdata={userdata} />
+      </div>
+    </>
   );
 }
 
